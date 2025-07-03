@@ -26,11 +26,24 @@ jobs:
         # Fix: Tell Tailscale to not interfere with public DNS lookups.
         args: --accept-dns=false
 
-    # Install the CA cert for the correct TAILSCALE IP
-    - name: Install custom CA Certificate
+    - name: Configure Trust for Docker and Java
       run: |
-        sudo mkdir -p /etc/docker/certs.d/100.109.96.15
-        echo "${{ secrets.REGISTRY_CA_CERT }}" | sudo tee /etc/docker/certs.d/100.109.96.15/ca.crt
+        # Create a temporary file with the certificate content
+        echo "${{ secrets.REGISTRY_CA_CERT }}" > registry-ca.crt
+
+        # 1. Configure Docker's trust store (for docker login and native build)
+        echo "--- Configuring Docker Trust ---"
+        sudo mkdir -p /etc/docker/certs.d/100.104.88.57
+        sudo cp registry-ca.crt /etc/docker/certs.d/100.104.88.57/ca.crt
+
+        # 2. Configure the JVM's trust store (for Jib push)
+        echo "--- Configuring Java Keystore Trust ---"
+        # The default password for the cacerts keystore is 'changeit'
+        sudo $JAVA_HOME/bin/keytool -import -trustcacerts -noprompt \
+          -keystore $JAVA_HOME/lib/security/cacerts \
+          -storepass changeit \
+          -alias selfsigned-registry-ca \
+          -file registry-ca.crt
 
     # Login to the TAILSCALE IP
     - name: Login to Self-Hosted Registry
