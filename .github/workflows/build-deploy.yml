@@ -1,4 +1,4 @@
-name: Build and Deploy Native Image via Tailscale
+name: Build and Push to Self-Hosted Registry
 
 on:
   push:
@@ -26,33 +26,33 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
         
-    # CRITICAL FIX: Enable Tailscale DNS on the runner
     - name: Setup Tailscale
       uses: tailscale/github-action@v2
       with:
         authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
-        # This flag configures /etc/resolv.conf to use Tailscale's DNS
-        args: --accept-dns=true 
+        # We don't need --accept-dns anymore, just the network tunnel
         
-    # Optional but recommended: Verify DNS resolution is working
-    - name: Verify DNS
+    # CRITICAL: Install your custom CA Certificate to make Docker trust your registry
+    - name: Install custom CA Certificate
       run: |
-        echo "Pinging registry.local.mikecarr.net..."
-        ping -c 3 registry.local.mikecarr.net
-        
-    # Login using the domain name and secure password-stdin method
-    - name: Login to Nexus
+        # This is the standard location for Docker to find registry-specific CAs.
+        # The directory name MUST match the host you are connecting to (your server's IP).
+        sudo mkdir -p /etc/docker/certs.d/10.0.1.140
+        echo "${{ secrets.REGISTRY_CA_CERT }}" | sudo tee /etc/docker/certs.d/10.0.1.140/ca.crt
+
+    # Login to your new self-hosted registry using its IP address
+    - name: Login to Self-Hosted Registry
       run: |
-        echo "${{ secrets.NEXUS_PASSWORD }}" | docker login registry.local.mikecarr.net -u "${{ secrets.NEXUS_USERNAME }}" --password-stdin
+        echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login 10.0.1.140 -u "${{ secrets.REGISTRY_USER }}" --password-stdin
         
     - name: Build and Push Native Image
       run: |
-        # This command is now clean and uses the secure domain name
+        # The registry argument now points directly to your server's IP address
         mvn clean package \
           -Dquarkus.package.type=native \
           -Dquarkus.native.container-build=true \
           -Dquarkus.container-image.build=true \
           -Dquarkus.container-image.push=true \
-          -Dquarkus.container-image.registry=registry.local.mikecarr.net \
+          -Dquarkus.container-image.registry=10.0.1.140 \
           -Dquarkus.container-image.group=mcarr \
           -Dquarkus.container-image.tag=${{ github.sha }}-native
