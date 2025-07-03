@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
-    
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,7 +27,7 @@ jobs:
     - name: Get Tailscale IP and Build
       run: |
         # Get your server's Tailscale IP
-        NEXUS_IP=$(tailscale status --json | jq -r '.Peer[] | select(.HostName=="your-server-hostname") | .TailscaleIPs[0]')
+        NEXUS_IP=$(tailscale status --json | jq -r '.Peer[] | select(.HostName=="docker-traefik") | .TailscaleIPs[0]')
         echo "Nexus IP: $NEXUS_IP"
         
         mvn clean package \
