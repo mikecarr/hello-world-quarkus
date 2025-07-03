@@ -23,6 +23,8 @@ jobs:
       uses: tailscale/github-action@v2
       with:
         authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+        # Fix: Tell Tailscale to not interfere with public DNS lookups.
+        args: --accept-dns=false
 
     # Install the CA cert for the correct TAILSCALE IP
     - name: Install custom CA Certificate
