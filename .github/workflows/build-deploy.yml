@@ -1,4 +1,4 @@
-name: Build and Push to Self-Hosted Registry
+name: Build and Push with Self-Hosted Registry
 
 on:
   push:
@@ -19,35 +19,36 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         
-    - name: Cache Maven dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
-        
     - name: Setup Tailscale
       uses: tailscale/github-action@v2
       with:
         authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
-        # We don't need --accept-dns anymore, just the network tunnel
-        
-    # CRITICAL: Install your custom CA Certificate to make Docker trust your registry
+
+    # ======================================================================
+    # NEW DIAGNOSTIC STEPS
+    # ======================================================================
+    - name: Verify Tailscale Connection
+      run: |
+        echo "--- Waiting for Tailscale to start ---"
+        sleep 5 # Give the daemon a moment to stabilize
+
+        echo "--- Running tailscale status ---"
+        tailscale status
+
+        echo "--- Pinging the registry server via Tailscale ---"
+        tailscale ping 10.0.1.140
+
     - name: Install custom CA Certificate
       run: |
-        # This is the standard location for Docker to find registry-specific CAs.
-        # The directory name MUST match the host you are connecting to (your server's IP).
         sudo mkdir -p /etc/docker/certs.d/10.0.1.140
         echo "${{ secrets.REGISTRY_CA_CERT }}" | sudo tee /etc/docker/certs.d/10.0.1.140/ca.crt
 
-    # Login to your new self-hosted registry using its IP address
     - name: Login to Self-Hosted Registry
       run: |
         echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login 10.0.1.140 -u "${{ secrets.REGISTRY_USER }}" --password-stdin
         
     - name: Build and Push Native Image
       run: |
-        # The registry argument now points directly to your server's IP address
         mvn clean package \
           -Dquarkus.package.type=native \
           -Dquarkus.native.container-build=true \
