@@ -1,4 +1,4 @@
-name: Build and Push with Self-Hosted Registry
+name: Build and Push to Self-Hosted Registry
 
 on:
   push:
@@ -18,42 +18,31 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        
+
     - name: Setup Tailscale
       uses: tailscale/github-action@v2
       with:
         authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
 
-    # ======================================================================
-    # NEW DIAGNOSTIC STEPS
-    # ======================================================================
-    - name: Verify Tailscale Connection
-      run: |
-        echo "--- Waiting for Tailscale to start ---"
-        sleep 5 # Give the daemon a moment to stabilize
-
-        echo "--- Running tailscale status ---"
-        tailscale status
-
-        echo "--- Pinging the registry server via Tailscale ---"
-        tailscale ping 10.0.1.140
-
+    # Install the CA cert for the correct TAILSCALE IP
     - name: Install custom CA Certificate
       run: |
-        sudo mkdir -p /etc/docker/certs.d/10.0.1.140
-        echo "${{ secrets.REGISTRY_CA_CERT }}" | sudo tee /etc/docker/certs.d/10.0.1.140/ca.crt
+        sudo mkdir -p /etc/docker/certs.d/100.104.88.57
+        echo "${{ secrets.REGISTRY_CA_CERT }}" | sudo tee /etc/docker/certs.d/100.104.88.57/ca.crt
 
+    # Login to the TAILSCALE IP
     - name: Login to Self-Hosted Registry
       run: |
-        echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login 10.0.1.140 -u "${{ secrets.REGISTRY_USER }}" --password-stdin
+        echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login 100.104.88.57 -u "${{ secrets.REGISTRY_USER }}" --password-stdin
         
     - name: Build and Push Native Image
       run: |
+        # Push to the TAILSCALE IP
         mvn clean package \
           -Dquarkus.package.type=native \
           -Dquarkus.native.container-build=true \
           -Dquarkus.container-image.build=true \
           -Dquarkus.container-image.push=true \
-          -Dquarkus.container-image.registry=10.0.1.140 \
+          -Dquarkus.container-image.registry=100.104.88.57 \
           -Dquarkus.container-image.group=mcarr \
           -Dquarkus.container-image.tag=${{ github.sha }}-native
