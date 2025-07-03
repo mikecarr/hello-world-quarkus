@@ -35,7 +35,7 @@ jobs:
     - name: Build and Push to Nexus
       run: |
         mvn clean package \
-          -Dquarkus.container-image.registry=http://100.104.88.57:5001 \
+          -Dquarkus.container-image.registry=100.104.88.57:5001 \
           -Dquarkus.container-image.insecure=true \
           -Djib.allowInsecureRegistries=true \
           -Dquarkus.container-image.username=${{ secrets.NEXUS_USERNAME }} \
