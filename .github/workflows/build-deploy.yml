@@ -27,13 +27,13 @@ jobs:
     # Install the CA cert for the correct TAILSCALE IP
     - name: Install custom CA Certificate
       run: |
-        sudo mkdir -p /etc/docker/certs.d/100.104.88.57
-        echo "${{ secrets.REGISTRY_CA_CERT }}" | sudo tee /etc/docker/certs.d/100.104.88.57/ca.crt
+        sudo mkdir -p /etc/docker/certs.d/100.109.96.15
+        echo "${{ secrets.REGISTRY_CA_CERT }}" | sudo tee /etc/docker/certs.d/100.109.96.15/ca.crt
 
     # Login to the TAILSCALE IP
     - name: Login to Self-Hosted Registry
       run: |
-        echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login 100.104.88.57 -u "${{ secrets.REGISTRY_USER }}" --password-stdin
+        echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login 100.109.96.15 -u "${{ secrets.REGISTRY_USER }}" --password-stdin
         
     - name: Build and Push Native Image
       run: |
@@ -43,6 +43,6 @@ jobs:
           -Dquarkus.native.container-build=true \
           -Dquarkus.container-image.build=true \
           -Dquarkus.container-image.push=true \
-          -Dquarkus.container-image.registry=100.104.88.57 \
+          -Dquarkus.container-image.registry=100.109.96.15 \
           -Dquarkus.container-image.group=mcarr \
           -Dquarkus.container-image.tag=${{ github.sha }}-native
