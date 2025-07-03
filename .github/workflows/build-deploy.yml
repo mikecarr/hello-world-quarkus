@@ -53,4 +53,5 @@ jobs:
           -Dquarkus.container-image.username=${{ secrets.NEXUS_USERNAME }} \
           -Dquarkus.container-image.password=${{ secrets.NEXUS_PASSWORD }} \
           -Dquarkus.container-image.tag=${{ github.sha }} \
+          -Dquarkus.container-image.push=true \
           -Dquarkus.jib.send-credentials-over-http=true
