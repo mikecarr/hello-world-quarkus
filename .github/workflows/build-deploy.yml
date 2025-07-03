@@ -46,13 +46,16 @@ jobs:
         
     - name: Build and Push Native Image
       run: |
-        # This command now relies on the pre-configured Docker daemon for the push
+        # We connect using the public domain name.
+        # Tailscale DNS resolves this to the private IP.
+        # No insecure flags needed!
+        docker login registry.yourdomain.com -u "${{ secrets.NEXUS_USERNAME }}" -p "${{ secrets.NEXUS_PASSWORD }}"
+        
         mvn clean package \
           -Dquarkus.package.type=native \
           -Dquarkus.native.container-build=true \
           -Dquarkus.container-image.build=true \
           -Dquarkus.container-image.push=true \
-          -Dquarkus.container-image.registry=100.104.88.57:5001 \
+          -Dquarkus.container-image.registry=registry.yourdomain.com \
           -Dquarkus.container-image.group=mcarr \
-          -Dquarkus.container-image.tag=${{ github.sha }}-native \
-          -Dquarkus.jib.platforms=linux/amd64
+          -Dquarkus.container-image.tag=${{ github.sha }}-native
