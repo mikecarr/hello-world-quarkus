@@ -56,6 +56,6 @@ jobs:
           -Dquarkus.native.container-build=true \
           -Dquarkus.container-image.build=true \
           -Dquarkus.container-image.push=true \
-          -Dquarkus.container-image.registry=registry.yourdomain.com \
+          -Dquarkus.container-image.registry=registry.local.mikecarr.net \
           -Dquarkus.container-image.group=mcarr \
           -Dquarkus.container-image.tag=${{ github.sha }}-native
