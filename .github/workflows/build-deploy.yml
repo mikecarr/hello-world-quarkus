@@ -49,7 +49,7 @@ jobs:
         # We connect using the public domain name.
         # Tailscale DNS resolves this to the private IP.
         # No insecure flags needed!
-        docker login registry.yourdomain.com -u "${{ secrets.NEXUS_USERNAME }}" -p "${{ secrets.NEXUS_PASSWORD }}"
+        docker login registry.local.mikecarr.net -u "${{ secrets.NEXUS_USERNAME }}" -p "${{ secrets.NEXUS_PASSWORD }}"
         
         mvn clean package \
           -Dquarkus.package.type=native \
