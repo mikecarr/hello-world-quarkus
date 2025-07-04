@@ -33,8 +33,8 @@ jobs:
 
         # 1. Configure Docker's trust store (for docker login and native build)
         echo "--- Configuring Docker Trust ---"
-        sudo mkdir -p /etc/docker/certs.d/100.104.88.57
-        sudo cp registry-ca.crt /etc/docker/certs.d/100.104.88.57/ca.crt
+        sudo mkdir -p /etc/docker/certs.d/100.109.96.15
+        sudo cp registry-ca.crt /etc/docker/certs.d/100.109.96.15/ca.crt
 
         # 2. Configure the JVM's trust store (for Jib push)
         echo "--- Configuring Java Keystore Trust ---"
