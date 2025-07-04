@@ -58,7 +58,7 @@ jobs:
           -Dquarkus.native.container-build=true \
           -Dquarkus.container-image.build=true \
           -Dquarkus.container-image.push=true \
-          -Dquarkus.container-image.registry=100.109.96.15 \
+          -Dquarkus.container-image.registry=100.109.96.15:5000g \
           -Dquarkus.container-image.group=mcarr \
           -Dquarkus.native.additional-build-args=-march=x86-64
           -Dquarkus.container-image.tag=${{ github.sha }}-native
