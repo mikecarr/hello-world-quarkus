@@ -48,7 +48,7 @@ jobs:
     # Login to the TAILSCALE IP
     - name: Login to Self-Hosted Registry
       run: |
-        echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login 10.0.1.201:8082 -u "${{ secrets.REGISTRY_USER }}" --password-stdin
+        echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login 100.104.88.57:8082 -u "${{ secrets.REGISTRY_USER }}" --password-stdin
         
     - name: Build and Push Native Image
       run: |
@@ -58,7 +58,7 @@ jobs:
           -Dquarkus.native.container-build=true \
           -Dquarkus.container-image.build=true \
           -Dquarkus.container-image.push=true \
-          -Dquarkus.container-image.registry=10.0.1.201:8082 \
+          -Dquarkus.container-image.registry=100.104.88.57:8082 \
           -Dquarkus.container-image.group=mcarr \
           -Dquarkus.native.additional-build-args=-march=x86-64
           -Dquarkus.container-image.tag=${{ github.sha }}-native
