@@ -80,7 +80,9 @@ jobs:
           -Dquarkus.native.container-build=true \
           -Dquarkus.container-image.build=true \
           -Dquarkus.container-image.push=true \
-          -Dquarkus.container-image.registry=http://100.104.88.57:8082 \
+          -Dquarkus.container-image.registry=100.104.88.57:8082 \
           -Dquarkus.container-image.group=mcarr \
+          -Dquarkus.container-image.insecure=true \
+          -Dquarkus.jib.allow-insecure-registries=true \
           -Dquarkus.native.additional-build-args=-march=x86-64
           -Dquarkus.container-image.tag=${{ github.sha }}-native
