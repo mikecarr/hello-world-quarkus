@@ -53,6 +53,20 @@ jobs:
         #ping registry.local.mikecarr.net
         #ping 10.0.1.201
 
+    - name: Configure Docker for Insecure Registry
+      run: |
+        # Configure Docker to allow insecure registry
+        sudo mkdir -p /etc/docker
+        echo '{
+          "insecure-registries": ["100.104.88.57:8082"]
+        }' | sudo tee /etc/docker/daemon.json
+        
+        # Restart Docker daemon
+        sudo systemctl restart docker
+        
+        # Wait for Docker to restart
+        sleep 10
+
     # Login to the TAILSCALE IP
     - name: Login to Self-Hosted Registry
       run: |
