@@ -68,9 +68,9 @@ mvn clean package \
   -Dquarkus.native.container-build=true \
   -Dquarkus.container-image.build=true \
   -Dquarkus.container-image.push=true \
-  -Dquarkus.container-image.registry=10.0.1.140:5001 \
+  -Dquarkus.container-image.registry=registry.local.mikecarr.net \
   -Dquarkus.container-image.group=mcarr \
   -Dquarkus.container-image.name=hello-world-quarkus \
-  -Dquarkus.container-image.tag=1.0.5-native \
-  -Dquarkus.jib.platforms=linux/amd64 \
-  -Dquarkus.container-image.insecure=true \
+  -Dquarkus.container-image.tag=1.0.1-native \
+  -Dquarkus.jib.platforms=linux/amd64 
+  
