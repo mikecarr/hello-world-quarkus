@@ -56,7 +56,7 @@ jobs:
     # Login to the TAILSCALE IP
     - name: Login to Self-Hosted Registry
       run: |
-        echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login registry.local.mikecarr.net -u "${{ secrets.REGISTRY_USER }}" --password-stdin
+        echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login 100.104.88.57:8082 -u "${{ secrets.REGISTRY_USER }}" --password-stdin
         
     - name: Build and Push Native Image
       run: |
