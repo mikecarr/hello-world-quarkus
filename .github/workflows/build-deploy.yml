@@ -50,8 +50,8 @@ jobs:
         echo "--- Debug ---"
         cat /etc/resolv.conf
         cat /etc/hosts
-        ping registry.local.mikecarr.net
-        ping 10.0.1.201
+        #ping registry.local.mikecarr.net
+        #ping 10.0.1.201
 
     # Login to the TAILSCALE IP
     - name: Login to Self-Hosted Registry
