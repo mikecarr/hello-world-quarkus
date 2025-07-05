@@ -72,5 +72,11 @@ mvn clean package \
   -Dquarkus.container-image.group=mcarr \
   -Dquarkus.container-image.name=hello-world-quarkus \
   -Dquarkus.container-image.tag=1.0.1-native \
-  -Dquarkus.jib.platforms=linux/amd64 
+  -Dquarkus.jib.platforms=linux/amd64,linux/arm64 \
+  -Dquarkus.jib.base-native-image=redhat/ubi8-minimal:8.10
   
+
+
+
+Quarkus Cheat Sheet
+https://lordofthejars.github.io/quarkus-cheat-sheet/

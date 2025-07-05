@@ -84,5 +84,5 @@ jobs:
           -Dquarkus.container-image.group=mcarr \
           -Dquarkus.container-image.insecure=true \
           -Dquarkus.jib.allow-insecure-registries=true \
-          -Dquarkus.native.additional-build-args=-march=x86-64
-          -Dquarkus.container-image.tag=${{ github.sha }}-native
+          -Dquarkus.native.additional-build-args=-march=x86-64 \
+          -Dquarkus.container-image.tag=${{ github.sha }}-native-x86_64
